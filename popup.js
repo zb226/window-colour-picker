@@ -38,24 +38,46 @@ async function loadWindows() {
             const tabText = tabs.length + ' tab' + (tabs.length !== 1 ? 's' : '');
             const isCurrentWindow = window.id === currentWindowId;
             
-            windowItem.innerHTML = '<div class="window-info">' +
-                '<span class="window-title">' + title + '</span>' +
-                '<span class="tab-count">' + tabText + 
-                (isCurrentWindow ? ' • This window' : '') + '</span>' +
-                '</div>';
+            const windowInfo = document.createElement('div');
+            windowInfo.className = 'window-info';
+            
+            const windowTitle = document.createElement('span');
+            windowTitle.className = 'window-title';
+            windowTitle.textContent = title;
+            
+            const tabCount = document.createElement('span');
+            tabCount.className = 'tab-count';
+            tabCount.textContent = tabText + (isCurrentWindow ? ' • This window' : '');
+            
+            windowInfo.appendChild(windowTitle);
+            windowInfo.appendChild(tabCount);
+            windowItem.appendChild(windowInfo);
+            
+            const colourIndicator = document.createElement('div');
+            colourIndicator.className = 'current-colour';
             
             if (currentColour) {
-                windowItem.innerHTML += '<div class="current-colour" style="background-color: ' + currentColour + '"></div>';
+                colourIndicator.style.backgroundColor = currentColour;
             } else {
-                windowItem.innerHTML += '<div class="current-colour default">Default</div>';
+                colourIndicator.className += ' default';
+                colourIndicator.textContent = 'Default';
             }
+            
+            windowItem.appendChild(colourIndicator);
             
             windowItem.addEventListener('click', () => selectWindow(window.id));
             windowList.appendChild(windowItem);
         }
     } catch (error) {
         const windowList = document.getElementById('windowList');
-        windowList.innerHTML = `<div style="padding: 10px; color: red;">Error loading windows: ${error.message}</div>`;
+        windowList.textContent = '';
+        
+        const errorDiv = document.createElement('div');
+        errorDiv.style.padding = '10px';
+        errorDiv.style.color = 'red';
+        errorDiv.textContent = `Error loading windows: ${error.message}`;
+        
+        windowList.appendChild(errorDiv);
     }
 }
 
