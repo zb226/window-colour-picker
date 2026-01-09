@@ -57,5 +57,3 @@ Based on the original [Colorful Window Theme](https://github.com/DaveDuck321/Col
 ## Original Project
 
 This extension builds upon the brilliant work of the original [Colorful Window Theme](https://github.com/DaveDuck321/Colorful-window-theme).
-
-test123

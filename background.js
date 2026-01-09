@@ -1,3 +1,5 @@
+import * as persistence from "./persistence.js";
+
 // Simple theme class
 class BasicColourTheme {
     constructor(frame, tab_background_text = '#111') {
@@ -21,9 +23,8 @@ let customWindowColours = new Map();
 // Apply saved colours when windows are created
 async function applyColourToWindow(window) {
     // Check if window has a custom colour preference
-    const storageData = await browser.storage.local.get(`window_${window.id}_colour`);
-    const customColour = storageData[`window_${window.id}_colour`];
-    
+    const customColour = await persistence.getWindowColour(window.id);
+
     if (customColour) {
         // Apply custom colour
         const customTheme = new BasicColourTheme(customColour);
@@ -34,10 +35,10 @@ async function applyColourToWindow(window) {
 }
 
 // Clean up when window is closed
-async function cleanupWindow(window_id) {
-    if (customWindowColours.has(window_id)) {
-        customWindowColours.delete(window_id);
-        await browser.storage.local.remove(`window_${window_id}_colour`);
+async function cleanupWindow(windowId) {
+    if (customWindowColours.has(windowId)) {
+        customWindowColours.delete(windowId);
+        await persistence.removeWindowColour(windowId)
     }
 }
 
@@ -64,22 +65,22 @@ browser.runtime.onMessage.addListener(async (message) => {
         const customTheme = new BasicColourTheme(colour);
         browser.theme.update(windowId, customTheme.browserThemeObject);
         customWindowColours.set(windowId, customTheme);
-        
+        await persistence.setWindowColour(windowId, colour);
     } else if (message.action === 'removeWindowColour') {
         const { windowId } = message;
         
         // Reset to default theme
         browser.theme.reset(windowId);
         customWindowColours.delete(windowId);
-        await browser.storage.local.remove(`window_${windowId}_colour`);
-        
+        await persistence.removeWindowColour(windowId);
     } else if (message.action === 'resetAllColours') {
         // Clear all custom colours
+        customWindowColours.clear();
+        await browser.storage.local.clear();
         const windows = await browser.windows.getAll();
         for (const window of windows) {
             browser.theme.reset(window.id);
+            await persistence.removeWindowColour(window.id);
         }
-        customWindowColours.clear();
-        await browser.storage.local.clear();
     }
 });
