@@ -10,13 +10,15 @@
   },
 
   "background": {
-    "scripts": ["background.js"]
+    "scripts": ["background.js"],
+    "type": "module"
   },
 
   "permissions": [
     "tabs",
     "theme",
-    "storage"
+    "storage",
+    "sessions"
   ],
 
   "browser_action": {
@@ -24,6 +26,12 @@
     "default_popup": "popup.html",
     "default_icon": {
       "128": "icon.png"
+    }
+  },
+
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "@window-colour-picker"
     }
   }
 }

@@ -1,3 +1,5 @@
+import * as persistence from "./persistence.js";
+
 let selectedWindowId = null;
 
 // Load current windows
@@ -31,8 +33,7 @@ async function loadWindows() {
             windowItem.dataset.windowId = window.id;
             
             // Get current colour for this window from storage
-            const colourData = await browser.storage.local.get(`window_${window.id}_colour`);
-            const currentColour = colourData[`window_${window.id}_colour`];
+            const currentColour = await persistence.getWindowColour(window.id);
             
             const title = activeTab ? activeTab.title : ('Window ' + window.id);
             const tabText = tabs.length + ' tab' + (tabs.length !== 1 ? 's' : '');
@@ -122,12 +123,7 @@ async function applyColour(colour) {
         windowId: selectedWindowId,
         colour: colour
     });
-    
-    // Save the custom colour preference
-    await browser.storage.local.set({
-        [`window_${selectedWindowId}_colour`]: colour
-    });
-    
+
     // Reload the window list to show the new colour
     loadWindows();
 }
