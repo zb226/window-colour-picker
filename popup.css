@@ -126,7 +126,11 @@ h4 {
     gap: 8px;
 }
 
+<<<<<<< Updated upstream
 .colour-button {
+=======
+.color-button, .reset-button {
+>>>>>>> Stashed changes
     width: 40px;
     height: 40px;
     border: 2px solid transparent;
@@ -137,6 +141,7 @@ h4 {
 
 .colour-button:hover {
     transform: scale(1.1);
+<<<<<<< Updated upstream
     border-color: #333;
 }
 
@@ -232,3 +237,16 @@ h4 {
 .reset-button:hover {
     background: #d32f2f;
 }
+=======
+    /* border: 2px solid transparent; */
+    border-color: #222;
+}
+
+.reset-button {
+    border: 2px solid #ccc !important;
+}
+
+.reset-button:hover {
+    transform: scale(1.1);
+}
+>>>>>>> Stashed changes
